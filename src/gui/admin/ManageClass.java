@@ -1,0 +1,528 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
+package gui.admin;
+
+import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.MySQL;
+import model.adminData;
+
+/**
+ *
+ * @author 94701
+ */
+public class ManageClass extends javax.swing.JPanel {
+
+    private static HashMap<String, String> teacherIdMap = new HashMap<>();
+    private static HashMap<String, String> subjectIdMap = new HashMap<>();
+    private static HashMap<String, String> dayIdMap = new HashMap<>();
+
+     private static String aemail;
+    /**
+     * Creates new form ManageClass
+     */
+    public ManageClass(adminData adminD) {
+        initComponents();
+        loadClass();
+        loadTeachers();
+        loadSubject();
+        loadDays();
+        jButton4.setEnabled(false);
+        aemail = adminD.getEmail();
+    }
+
+    //load class
+    private void loadClass() {
+
+        try {
+
+            ResultSet classRs = MySQL.execute("SELECT * FROM `class` "
+                    + "INNER JOIN `teacher` ON `class`.`teacher_tno`=`teacher`.`tno` "
+                    + "INNER JOIN `subject` ON `class`.`subject_subno`=`subject`.`subno`"
+                    + " INNER JOIN `days` ON `class`.`days_day_id`=`days`.`day_id`");
+
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0);
+
+            while (classRs.next()) {
+                Vector<String> classVector = new Vector<>();
+                classVector.add(classRs.getString("classNo"));
+                classVector.add(classRs.getString("className"));
+                classVector.add(classRs.getString("teacher.fname") + ' ' + classRs.getString("teacher.lname"));
+                classVector.add(classRs.getString("sub_name"));
+                classVector.add(classRs.getString("day_name"));
+                classVector.add(classRs.getString("start_time"));
+                classVector.add(classRs.getString("end_time"));
+
+                model.addRow(classVector);
+                jTable1.setModel(model);
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //loadTeachers
+    private void loadTeachers() {
+
+        try {
+            ResultSet teacherRs = MySQL.execute("SELECT * FROM `teacher`");
+            Vector<String> teachersVector = new Vector<>();
+            teachersVector.add("Select Teacher");
+            while (teacherRs.next()) {
+                teachersVector.add(teacherRs.getString("fname") + ' ' + teacherRs.getString("lname"));
+                teacherIdMap.put(teacherRs.getString("fname") + ' ' + teacherRs.getString("lname"), teacherRs.getString("tno"));
+            }
+
+            DefaultComboBoxModel model = new DefaultComboBoxModel(teachersVector);
+            jComboBox2.setModel(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //load Subject
+    private void loadSubject() {
+
+        try {
+            ResultSet subjectRs = MySQL.execute("SELECT * FROM `subject`");
+            Vector<String> subjectVector = new Vector<>();
+            subjectVector.add("Select Subject");
+
+            while (subjectRs.next()) {
+                subjectVector.add(subjectRs.getString("sub_name"));
+                subjectIdMap.put(subjectRs.getString("sub_name"), subjectRs.getString("subno"));
+            }
+
+            DefaultComboBoxModel model = new DefaultComboBoxModel(subjectVector);
+            jComboBox4.setModel(model);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //load days
+    private void loadDays() {
+
+        try {
+            ResultSet daysRs = MySQL.execute("SELECT * FROM `days`");
+            Vector<String> dayVector = new Vector<>();
+            dayVector.add("Select Class Day");
+
+            while (daysRs.next()) {
+                dayVector.add(daysRs.getString("day_name"));
+                dayIdMap.put(daysRs.getString("day_name"), daysRs.getString("day_id"));
+            }
+
+            DefaultComboBoxModel model = new DefaultComboBoxModel(dayVector);
+            jComboBox3.setModel(model);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void reset() {
+
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jComboBox2.setSelectedIndex(0);
+        jComboBox4.setSelectedIndex(0);
+        jTextField4.setText("");
+        jTextField3.setText("");
+        jComboBox3.setSelectedIndex(0);
+        jTextField1.grabFocus();
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jComboBox3 = new javax.swing.JComboBox<>();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jComboBox4 = new javax.swing.JComboBox<>();
+        jTextField3 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField4 = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Class Number");
+
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Class Name");
+
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox3ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Add Class");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("Update Class");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jComboBox4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("End Time");
+
+        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField4ActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Start Time");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jComboBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jComboBox2, 0, 312, Short.MAX_VALUE)
+                            .addComponent(jLabel1)
+                            .addComponent(jTextField1)
+                            .addComponent(jLabel4)
+                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2)
+                            .addComponent(jComboBox4, 0, 317, Short.MAX_VALUE)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(22, Short.MAX_VALUE))
+        );
+
+        jPanel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jComboBox2, jComboBox4});
+
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(jLabel2)))
+                .addGap(3, 3, 3)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(3, 3, 3)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(6, 6, 6)
+                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(22, 22, 22))
+        );
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Class Number", "Name", "Teacher Name", "Subject Name", "Day", "Start", "End"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        String classNum = jTextField1.getText();
+        String className = jTextField2.getText();
+        String teacherName = String.valueOf(jComboBox2.getSelectedItem());
+        String subjectName = String.valueOf(jComboBox4.getSelectedItem());
+        String day = String.valueOf(jComboBox3.getSelectedItem());
+        String stratTime = jTextField4.getText();
+        String endTime = jTextField3.getText();
+
+        if (classNum.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter class Number or Id", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else if (className.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter class name", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else if (teacherName.matches("Select Teacher")) {
+            JOptionPane.showMessageDialog(this, "Please select teacher", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else if (subjectName.matches("Select Subject")) {
+            JOptionPane.showMessageDialog(this, "Please select subject", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else if (day.matches("Select Class Day")) {
+            JOptionPane.showMessageDialog(this, "Please select class day", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else if (stratTime.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter class strat time", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else if (endTime.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter class end time", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else {
+
+            String teacherId = teacherIdMap.get(teacherName);
+            String subjectId = subjectIdMap.get(subjectName);
+            String dayid = dayIdMap.get(day);
+
+            try {
+
+                MySQL.execute("INSERT INTO `class`(`classNo`,`className`,`teacher_tno`,`subject_subno`,`start_time`,`end_time`,`days_day_id`,`admin_email`)"
+                        + "VALUES('" + classNum + "','" + className + "','" + teacherId + "','" + subjectId + "','" + stratTime + "','" + endTime + "','" + dayid + "','"+aemail+"')");
+
+                loadClass();
+                reset();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        int selectedrow = jTable1.getSelectedRow();
+       
+        if (selectedrow == -1) {
+            JOptionPane.showMessageDialog(this, "select class", "", JOptionPane.WARNING_MESSAGE);
+        } else {
+
+            String classNum = jTextField1.getText();
+            String className = jTextField2.getText();
+            String teacherName = String.valueOf(jComboBox2.getSelectedItem());
+            String subjectName = String.valueOf(jComboBox4.getSelectedItem());
+            String day = String.valueOf(jComboBox3.getSelectedItem());
+            String stratTime = jTextField4.getText();
+            String endTime = jTextField3.getText();
+
+            if (classNum.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter class Number or Id", "Warning", JOptionPane.WARNING_MESSAGE);
+            } else if (className.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter class name", "Warning", JOptionPane.WARNING_MESSAGE);
+            } else if (teacherName.matches("Select Teacher")) {
+                JOptionPane.showMessageDialog(this, "Please select teacher", "Warning", JOptionPane.WARNING_MESSAGE);
+            } else if (subjectName.matches("Select Subject")) {
+                JOptionPane.showMessageDialog(this, "Please select subject", "Warning", JOptionPane.WARNING_MESSAGE);
+            } else if (day.matches("Select Class Day")) {
+                JOptionPane.showMessageDialog(this, "Please select class day", "Warning", JOptionPane.WARNING_MESSAGE);
+            } else if (stratTime.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter class strat time", "Warning", JOptionPane.WARNING_MESSAGE);
+            } else if (endTime.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter class end time", "Warning", JOptionPane.WARNING_MESSAGE);
+            } else {
+
+                String teacherId = teacherIdMap.get(teacherName);
+                String subjectId = subjectIdMap.get(subjectName);
+                String dayid = dayIdMap.get(day);
+
+                try {
+
+                    MySQL.execute("UPDATE `class` SET `className`='" + className + "',`teacher_tno`='" + teacherId + "',`subject_subno`='" + subjectId + "',`start_time`='" + stratTime + "',`end_time`='" + endTime + "',`days_day_id`='" + dayid + "' WHERE `classNo`='" + classNum + "'");
+
+                    loadClass();
+                    reset();
+                     jTextField1.setEnabled(true);
+                    jTable1.setEnabled(true);
+                    
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBox3ActionPerformed
+
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField4ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+             jTextField1.setEnabled(false);
+            jTable1.setEnabled(false);
+            jButton3.setEnabled(false);
+            jButton4.setEnabled(true);
+
+            int selectedRow = jTable1.getSelectedRow();
+
+            String classNumber = String.valueOf(jTable1.getValueAt(selectedRow, 0));
+            jTextField1.setText(classNumber);
+            String name = String.valueOf(jTable1.getValueAt(selectedRow, 1));
+            jTextField2.setText(name);
+            String teacher = String.valueOf(jTable1.getValueAt(selectedRow, 2));
+            jComboBox2.setSelectedItem(teacher);
+            String subject = String.valueOf(jTable1.getValueAt(selectedRow, 3));
+            jComboBox4.setSelectedItem(subject);
+            String day = String.valueOf(jTable1.getValueAt(selectedRow, 4));
+            jComboBox3.setSelectedItem(day);
+            String start = String.valueOf(jTable1.getValueAt(selectedRow, 5));
+            jTextField4.setText(start);
+            String end = String.valueOf(jTable1.getValueAt(selectedRow, 6));
+            jTextField3.setText(end);
+            
+            if(evt.getClickCount() == 1){
+         jTable1.setEnabled(true);
+         reset();
+        }
+        }
+        
+        
+    }//GEN-LAST:event_jTable1MouseClicked
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBox3;
+    private javax.swing.JComboBox<String> jComboBox4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    // End of variables declaration//GEN-END:variables
+}
